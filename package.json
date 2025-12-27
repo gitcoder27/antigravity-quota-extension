@@ -1,0 +1,106 @@
+{
+  "name": "antigravity-quota",
+  "displayName": "Antigravity Quota Monitor",
+  "description": "Monitor AI model usage quotas and reset times for Antigravity IDE",
+  "version": "1.0.0",
+  "publisher": "ayansaha",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onView:antigravityQuota"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "antigravity-quota",
+          "title": "Antigravity Quota",
+          "icon": "$(dashboard)"
+        }
+      ]
+    },
+    "views": {
+      "antigravity-quota": [
+        {
+          "type": "webview",
+          "id": "antigravityQuota",
+          "name": "AI Model Quotas",
+          "icon": "$(graph)",
+          "contextualTitle": "Antigravity Quota Monitor"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "antigravity-quota.refresh",
+        "title": "Refresh Quotas",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "antigravity-quota.showDetails",
+        "title": "Show Quota Details",
+        "icon": "$(info)"
+      },
+      {
+        "command": "antigravity-quota.openSettings",
+        "title": "Open Settings",
+        "icon": "$(gear)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "antigravity-quota.refresh",
+          "when": "view == antigravityQuota",
+          "group": "navigation@1"
+        },
+        {
+          "command": "antigravity-quota.showDetails",
+          "when": "view == antigravityQuota",
+          "group": "navigation@2"
+        },
+        {
+          "command": "antigravity-quota.openSettings",
+          "when": "view == antigravityQuota",
+          "group": "navigation@3"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Antigravity Quota Monitor",
+      "properties": {
+        "antigravityQuota.heroModel1": {
+          "type": "string",
+          "default": "Claude Opus 4.5 (Thinking)",
+          "description": "First model to display in the hero gauges section"
+        },
+        "antigravityQuota.heroModel2": {
+          "type": "string",
+          "default": "Gemini 3 Pro (High)",
+          "description": "Second model to display in the hero gauges section"
+        },
+        "antigravityQuota.heroModel3": {
+          "type": "string",
+          "default": "Gemini 3 Flash",
+          "description": "Third model to display in the hero gauges section"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@types/vscode": "^1.74.0",
+    "typescript": "^5.0.0"
+  }
+}
