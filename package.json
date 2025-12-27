@@ -4,6 +4,10 @@
   "description": "Monitor AI model usage quotas and reset times for Antigravity IDE",
   "version": "1.0.0",
   "publisher": "ayansaha",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gitcoder27/antigravity-quota-extension.git"
+  },
   "engines": {
     "vscode": "^1.74.0"
   },

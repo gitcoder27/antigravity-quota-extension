@@ -297,6 +297,7 @@ export class QuotaSidebarProvider implements vscode.WebviewViewProvider {
             background: var(--bg-surface);
             border: 1px solid var(--border-default);
             border-radius: 8px;
+            margin-top: 4px;
             margin-bottom: 12px;
             font-size: 10px;
             color: var(--fg-subtle);
@@ -663,13 +664,7 @@ export class QuotaSidebarProvider implements vscode.WebviewViewProvider {
 </head>
 <body>
     <div class="container">
-        <!-- Last Refresh Banner -->
-        <div class="refresh-banner">
-            <span class="icon">🔄</span>
-            <span>Last refreshed:</span>
-            <span class="time">${refreshTimeFormatted}</span>
-            <span class="ago">(${lastRefreshStr})</span>
-        </div>
+
 
         <!-- Hero Gauges -->
         <div class="hero">
@@ -723,6 +718,14 @@ export class QuotaSidebarProvider implements vscode.WebviewViewProvider {
             <div class="card-content">
                 ${modelListItems}
             </div>
+        </div>
+
+        <!-- Last Refresh Banner -->
+        <div class="refresh-banner">
+            <span class="icon">🔄</span>
+            <span>Last refreshed:</span>
+            <span class="time">${refreshTimeFormatted}</span>
+            <span class="ago">(${lastRefreshStr})</span>
         </div>
 
         <div class="footer">
