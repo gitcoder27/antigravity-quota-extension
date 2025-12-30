@@ -92,6 +92,19 @@
           "type": "string",
           "default": "Gemini 3 Flash",
           "description": "Third model to display in the hero gauges section"
+        },
+        "antigravityQuota.resetTimeFormat": {
+          "type": "string",
+          "enum": [
+            "relative",
+            "absolute"
+          ],
+          "default": "relative",
+          "enumDescriptions": [
+            "Shows time remaining (e.g., 4h 41m)",
+            "Shows the clock time when quota resets (e.g., 11:57 PM)"
+          ],
+          "description": "Format for displaying quota reset time in hero gauges"
         }
       }
     }

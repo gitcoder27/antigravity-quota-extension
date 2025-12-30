@@ -5,7 +5,7 @@
  */
 
 import * as vscode from 'vscode';
-import { MetricsResponse, formatResetTime } from './metricsClient';
+import { MetricsResponse, formatResetTime, formatResetTimeAbsolute } from './metricsClient';
 
 export class QuotaWebviewPanel {
     public static currentPanel: QuotaWebviewPanel | undefined;
@@ -65,7 +65,7 @@ export class QuotaWebviewPanel {
         const heroGauges = heroModels.map(model => {
             if (!model.quotaInfo) return '';
             const percentage = Math.round(model.quotaInfo.remainingFraction * 100);
-            const resetTime = formatResetTime(model.quotaInfo.resetTime);
+            const resetTime = this._formatResetTimeByPreference(model.quotaInfo.resetTime);
 
             let strokeColor = '#22c55e'; // green
             let glowColor = 'rgba(34, 197, 94, 0.3)';
@@ -110,7 +110,7 @@ export class QuotaWebviewPanel {
         const modelListItems = remainingModels.map(model => {
             if (!model.quotaInfo) return '';
             const percentage = Math.round(model.quotaInfo.remainingFraction * 100);
-            const resetTime = formatResetTime(model.quotaInfo.resetTime);
+            const resetTime = this._formatResetTimeByPreference(model.quotaInfo.resetTime);
 
             let statusClass = 'healthy';
             let barColor = '#22c55e';
@@ -623,6 +623,18 @@ export class QuotaWebviewPanel {
             return (num / 1000).toFixed(num % 1000 === 0 ? 0 : 1) + 'K';
         }
         return num.toString();
+    }
+
+    private _getResetTimeFormat(): 'relative' | 'absolute' {
+        const config = vscode.workspace.getConfiguration('antigravityQuota');
+        return config.get<'relative' | 'absolute'>('resetTimeFormat', 'relative');
+    }
+
+    private _formatResetTimeByPreference(resetTime: string): string {
+        const format = this._getResetTimeFormat();
+        return format === 'absolute'
+            ? formatResetTimeAbsolute(resetTime)
+            : formatResetTime(resetTime);
     }
 
     private _getLoadingHtml(): string {

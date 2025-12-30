@@ -4,7 +4,7 @@
  */
 
 import * as vscode from 'vscode';
-import { MetricsResponse, ModelConfig, formatResetTime } from './metricsClient';
+import { MetricsResponse, ModelConfig, formatResetTime, formatResetTimeAbsolute } from './metricsClient';
 
 export class QuotaSidebarProvider implements vscode.WebviewViewProvider {
     public static readonly viewType = 'antigravityQuota';
@@ -29,6 +29,13 @@ export class QuotaSidebarProvider implements vscode.WebviewViewProvider {
         };
 
         webviewView.webview.html = this._getHtmlContent();
+
+        // Re-render when the sidebar becomes visible to update "last refreshed" time
+        webviewView.onDidChangeVisibility(() => {
+            if (webviewView.visible) {
+                this._updateView();
+            }
+        });
     }
 
     public setLoading(): void {
@@ -60,6 +67,18 @@ export class QuotaSidebarProvider implements vscode.WebviewViewProvider {
             config.get<string>('heroModel2', 'Gemini 3 Pro (High)'),
             config.get<string>('heroModel3', 'Gemini 3 Flash'),
         ];
+    }
+
+    private _getResetTimeFormat(): 'relative' | 'absolute' {
+        const config = vscode.workspace.getConfiguration('antigravityQuota');
+        return config.get<'relative' | 'absolute'>('resetTimeFormat', 'relative');
+    }
+
+    private _formatResetTimeByPreference(resetTime: string): string {
+        const format = this._getResetTimeFormat();
+        return format === 'absolute'
+            ? formatResetTimeAbsolute(resetTime)
+            : formatResetTime(resetTime);
     }
 
     private _formatLastRefresh(): string {
@@ -142,7 +161,7 @@ export class QuotaSidebarProvider implements vscode.WebviewViewProvider {
         const heroGauges = heroModels.map((model, idx) => {
             if (!model.quotaInfo) return '';
             const percentage = Math.round(model.quotaInfo.remainingFraction * 100);
-            const resetTime = formatResetTime(model.quotaInfo.resetTime);
+            const resetTime = this._formatResetTimeByPreference(model.quotaInfo.resetTime);
 
             // Elegant neon colors - toned down for readability
             let strokeColor: string;
@@ -205,7 +224,7 @@ export class QuotaSidebarProvider implements vscode.WebviewViewProvider {
         const modelListItems = modelsWithQuota.map(model => {
             if (!model.quotaInfo) return '';
             const percentage = Math.round(model.quotaInfo.remainingFraction * 100);
-            const resetTime = formatResetTime(model.quotaInfo.resetTime);
+            const resetTime = this._formatResetTimeByPreference(model.quotaInfo.resetTime);
 
             let statusClass = 'healthy';
             let barColor = '#00ff88';

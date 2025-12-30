@@ -232,6 +232,24 @@ export function formatResetTime(resetTime: string): string {
 }
 
 /**
+ * Format reset time to absolute 12-hour clock time (e.g., "11:57 PM")
+ */
+export function formatResetTimeAbsolute(resetTime: string): string {
+    const reset = new Date(resetTime);
+    const now = new Date();
+
+    if (reset.getTime() <= now.getTime()) {
+        return 'resetting...';
+    }
+
+    return reset.toLocaleTimeString([], {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+    });
+}
+
+/**
  * Get quota status color based on remaining fraction
  */
 export function getQuotaColor(remainingFraction: number): string {
